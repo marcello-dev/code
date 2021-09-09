@@ -8,7 +8,6 @@ import orm
 import repository
 import services
 
-
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
 app = Flask(__name__)
@@ -28,3 +27,10 @@ def allocate_endpoint():
         return {"message": str(e)}, 400
 
     return {"batchref": batchref}, 201
+
+
+@app.route("/batch", methods=["GET"])
+def get_batches():
+    session = get_session()
+    repo = repository.SqlAlchemyRepository(session)
+    return repo.list(), 200
